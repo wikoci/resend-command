@@ -96,7 +96,7 @@ async function exec(){
         message:'Name of Organisation'
     }).then(v=>v.name)
   
-    config.from = await inquirer.prompt({
+    config.subject = await inquirer.prompt({
         name:'Subject',
         message:'Subject'
     }).then(v=>v.Subject)
