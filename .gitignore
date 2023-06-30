@@ -3,3 +3,5 @@ package-lock.json
 .VScode
 .env
 .prod.env
+./src/templates
+./src/contacts
