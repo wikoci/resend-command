@@ -41,26 +41,28 @@ async function startSend(config){
     var sc = setInterval(()=>{
         let fromIs = `${config.name||process.env.FROM_NAME} <${config.from||process.env.FROM_EMAIL}>`
 
-            if(config.randomEmail || config.randomEmail=='true'){
-                fromIs = `${config.name||process.env.FROM_NAME} <${generate(5)}@${domain}>`
+            if(config.randomEmail==true || config.randomEmail=='true'){
+                fromIs = `${config.name||process.env.FROM_NAME} <${generate({minLength:5,join:''})}@${domain}>`
             }
 
          
-         let to = contacts[i]
-         consola.info(`${i}/${length} From : ${fromIs} | To => ${to}`)
-         resend.emails.send({
-            from:fromIs,
-            html:letter,
-            to:to,
+         var to = contacts[i]||null
         
-            text:htmlToText(letter),
-            subject:config.subject||process.env.SUBJECT
-         }).catch(err=>{
-            consola.log(err)
-         })
-      
+        if(to){
+            consola.info(`${i}/${length} From : ${fromIs} | To => ${to}`)
+            resend.emails.send({
+                from:fromIs,
+                html:letter,
+                to:to,
+            
+                text:htmlToText(letter),
+                subject:config.subject||process.env.SUBJECT
+             }).catch(err=>{
+                consola.log(err)
+             })
+          
+        }
        
-        
          if(i==length){
                  consola.success('Send OK')
                  clearInterval(sc)
@@ -133,6 +135,7 @@ async function exec(){
     config.randomEmail = await inquirer.prompt({
         name:'randomEmail',
         type:"list",
+        default:'false',
         message:'Do you want to use random E-mail provider ?',
         choices:['false','true']
     }).then(v=>v.randomEmail)
