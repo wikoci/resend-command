@@ -47,6 +47,7 @@ async function startSend(config){
 
          
          var to = contacts[i]||null
+         to = String(to.replace(/\s/g,''))
         
         if(to){
             consola.info(`${i}/${length} From : ${fromIs} | To => ${to}`)
