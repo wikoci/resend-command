@@ -1,2 +1,16 @@
 customer1@gmail.com
 jhon.doe@mail.com
+customer3@gmail.com
+jhon.doq@mail.com
+cstomer1@gmail.com
+jhn.doe@mail.com
+customer1@gmail.com
+jhon.doe@outlook.com
+jhon9.doe@outlook.com
+jhon.doe@outlook.fr
+jhon.dns@outlook.com
+cus-tomer1@gmail.com
+jhoe.doe@mail.com
+client1@gmail.com
+client2e@post.com
+client3e@post.com

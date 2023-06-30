@@ -1,6 +1,7 @@
 
 import { consola, createConsola } from "consola";
 import 'dotenv/config'
+import { generate, count } from "random-words";
 import _ from "lodash"
 import inquirer from 'inquirer';
 import path from "path"
