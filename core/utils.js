@@ -47,8 +47,8 @@ async function startSend(config){
 
          
          var to = contacts[i]||null
-         to = String(to.replace(/\s/g,''))
-        
+       try{
+        to = String(to.replace(/\s/g,''))
         if(to){
             consola.info(`${i}/${length} From : ${fromIs} | To => ${to}`)
             resend.emails.send({
@@ -63,6 +63,9 @@ async function startSend(config){
              })
           
         }
+       } catch(err){
+        
+       }
        
          if(i==length){
                  consola.success('Send OK')
