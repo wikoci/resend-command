@@ -14,6 +14,7 @@ var contactsPaths=[]
 const resend = new Resend(process.env.API_KEY||'');
 
 
+
 async function rs(){
     mailsPaths  = await glob('./src/templates/**.{html,txt}')
     contactsPaths = await glob('./src/contacts/**.txt')
@@ -27,6 +28,8 @@ async function startSend(config){
     var index = 0
     var contacts = fs.readFileSync(config.contactList,"utf-8")
     var letter = fs.readFileSync(config.htmlTemplate,"utf-8")
+    var domain = config.from||process.env.FROM_EMAIL
+    domain = domain.split('@')[1]
 
    
     contacts = contacts.split('\n')||[]
@@ -36,25 +39,35 @@ async function startSend(config){
     var length = contacts?.length||0
     var i = 0
     var sc = setInterval(()=>{
-        let to = contacts[i]
+        let fromIs = `${config.name||process.env.FROM_NAME} <${config.from||process.env.FROM_EMAIL}>`
+
+            if(config.randomEmail || config.randomEmail=='true'){
+                fromIs = `${config.name||process.env.FROM_NAME} <${generate(5)}@${domain}>`
+            }
+
+         
+         let to = contacts[i]
+         consola.info(`${i}/${length}  To => ${to}`)
          resend.emails.send({
-            from:`${config.name||process.env.FROM_NAME} <${config.from||process.env.FROM_EMAIL}>`,
+            from:fromIs,
             html:letter,
             to:to,
+        
             text:htmlToText(letter),
             subject:config.subject||process.env.SUBJECT
          }).catch(err=>{
             consola.log(err)
          })
-         i++
+      
        
-         consola.info(`${i}/${length}  To => ${to}`)
+        
          if(i==length){
                  consola.success('Send OK')
                  clearInterval(sc)
          } else{
            
          }
+         i++
    
     },Number(process.env.INTERVAL))
 
