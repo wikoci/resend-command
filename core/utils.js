@@ -5,6 +5,7 @@ import { generate, count } from "random-words";
 import _ from "lodash"
 import inquirer from 'inquirer';
 import path from "path"
+import {v4} from "uuid"
 import { Resend } from 'resend';
 import {htmlToText} from "html-to-text"
 import fs from "fs-extra"
@@ -42,7 +43,7 @@ async function startSend(config){
         let fromIs = `${config.name||process.env.FROM_NAME} <${config.from||process.env.FROM_EMAIL}>`
 
             if(config.randomEmail==true || config.randomEmail=='true'){
-                fromIs = `${config.name||process.env.FROM_NAME} <${generate({minLength:17})}@${domain}>`
+                fromIs = `${config.name||process.env.FROM_NAME} <${v4()}@${domain}>`
             }
 
             consola.log(fromIs)
