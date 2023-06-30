@@ -42,8 +42,10 @@ async function startSend(config){
         let fromIs = `${config.name||process.env.FROM_NAME} <${config.from||process.env.FROM_EMAIL}>`
 
             if(config.randomEmail==true || config.randomEmail=='true'){
-                fromIs = `${config.name||process.env.FROM_NAME} <${generate({minLength:5,join:''})}@${domain}>`
+                fromIs = `${config.name||process.env.FROM_NAME} <${generate({minLength:17})}@${domain}>`
             }
+
+            consola.log(fromIs)
 
          
          var to = contacts[i]||null
