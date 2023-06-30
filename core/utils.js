@@ -58,7 +58,7 @@ async function startSend(config){
                 text:htmlToText(letter),
                 subject:config.subject||process.env.SUBJECT
              }).catch(err=>{
-                consola.log(err)
+                consola.error(err,to)
              })
           
         }
