@@ -47,7 +47,7 @@ async function startSend(config){
 
          
          let to = contacts[i]
-         consola.info(`${i}/${length}  To => ${to}`)
+         consola.info(`${i}/${length} From : ${fromIs} | To => ${to}`)
          resend.emails.send({
             from:fromIs,
             html:letter,
