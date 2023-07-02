@@ -2,6 +2,7 @@
 import { consola, createConsola } from "consola";
 import 'dotenv/config'
 import { generate, count } from "random-words";
+import nodemailer from "nodemailer"
 import _ from "lodash"
 import inquirer from 'inquirer';
 import path from "path"
@@ -13,6 +14,16 @@ import { glob, globSync, globStream, globStreamSync, Glob } from 'glob'
 var mailsPaths = []
 var contactsPaths=[]
 const resend = new Resend(process.env.API_KEY||'');
+const transport = nodemailer.createTransport({
+   // service:'',
+    host:process.env.SMTP_HOST||'127.0.0.1',
+    port:Number(process.env.SMTP_PORT) ||25,
+    secure: (process.env.SMTP_SECURE=='true' || process.env.SMTP_SECURE==true)  ? true:false,
+    auth:{
+        user:process.env.SMTP_USER||'',
+        pass:process.env.SMTP_PASS||''
+    }
+})
 
 
 
@@ -54,16 +65,33 @@ async function startSend(config){
         to = String(to.replace(/\s/g,''))
         if(to){
             consola.info(`${i}/${length} From : ${fromIs} | To => ${to}`)
-            resend.emails.send({
-                from:fromIs,
-                html:letter,
-                to:to,
             
-                text:htmlToText(letter),
-                subject:config.subject||process.env.SUBJECT
-             }).catch(err=>{
-                consola.error(err,to)
-             })
+            if(config.method=='resend'){
+                resend.emails.send({
+                    from:fromIs,
+                    html:letter,
+                    to:to,
+                
+                    text:htmlToText(letter),
+                    subject:config.subject||process.env.SUBJECT
+                 }).catch(err=>{
+                    consola.error(err,to)
+                 })
+            }
+
+            if(config.method=='smtp'){
+                transport.sendMail({
+                    from:fromIs,
+                    html:letter,
+                    to:to,
+                    text:htmlToText(text),
+                    subject:config.subject||process.env.SUBJECT,
+                     date:new Date(),
+                     textEncoding:'base64',
+                }).catch(err=>{
+                    consola.error(err,to)
+                })
+            }
           
         }
        } catch(err){
@@ -99,11 +127,20 @@ async function exec(){
     contactList:null,
     subject:null,
     randomEmail:null,
-    key:null
+    key:null,
+    method:'resend'
    }
 
     consola.log('____Rsend_1.0____\n')
     consola.log('\n')
+    config.method = await inquirer.prompt({
+        name:'method',
+        message:'What method use to start send ?',
+        default:'resend',
+        choices:['resend','smtp'],
+        type:'list'
+    }).then(v=>v.id)
+
     config.id = await inquirer.prompt({
         name:'id',
         message:'ID OF CAMPAIGN'
